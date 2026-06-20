@@ -291,6 +291,5 @@ This repository serves as a foundation for deep OSS contributions, rigorous engi
 
 **Ankit Arayan Tripathy**
 
-*AI Engineer → AI Systems Engineer → Inference Engineer → LLM Engineer*
 
 [![GitHub](https://img.shields.io/badge/GitHub-x2ankit-181717?style=for-the-badge&logo=github)](https://github.com/x2ankit)
