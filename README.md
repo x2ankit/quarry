@@ -1,14 +1,26 @@
-# Quarry
+<div align="center">
+  <h1>🧠 Quarry</h1>
+  <p><strong>Knowledge Infrastructure Platform for Retrieval, Agents, and Production AI Systems</strong></p>
 
-Quarry is an AI Knowledge Infrastructure Platform providing the foundational data layer for document ingestion, dense vector embedding, and semantic search.
+  <p>
+    <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi" alt="FastAPI" /></a>
+    <a href="https://www.postgresql.org/"><img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" /></a>
+    <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" /></a>
+    <img src="https://img.shields.io/badge/Security-JWT_Auth-success?style=for-the-badge" alt="Security" />
+  </p>
+</div>
 
 ---
 
-## 1. Why Quarry Exists
+## 🎯 Why Quarry Exists
 
-Building reliable generative AI applications requires robust document ingestion, consistent chunking strategies, and low-latency semantic retrieval. Existing off-the-shelf vector database wrappers often couple infrastructure too tightly with orchestration logic. Quarry decouples these concerns, providing a dedicated, API-first service exclusively for document intelligence and vector retrieval. This architectural separation guarantees that engineering teams retain complete control over their RAG (Retrieval-Augmented Generation) pipelines and multi-tenant data isolation.
+Building reliable generative AI applications requires robust document ingestion, consistent chunking strategies, and low-latency semantic retrieval. Existing off-the-shelf vector database wrappers often couple infrastructure too tightly with orchestration logic. 
 
-## 2. Design Principles
+Quarry decouples these concerns, providing a dedicated, API-first service exclusively for document intelligence and vector retrieval. This architectural separation guarantees that engineering teams retain complete control over their RAG (Retrieval-Augmented Generation) pipelines and multi-tenant data isolation.
+
+---
+
+## 🏗️ Design Principles
 
 - **API-First**: All system capabilities are exposed via strict, statically-typed REST endpoints.
 - **Stateless Orchestration**: The API layer remains stateless; all state is durably persisted, allowing horizontal scalability.
@@ -17,20 +29,19 @@ Building reliable generative AI applications requires robust document ingestion,
 
 ---
 
-## 3. Current State
+## 🚀 Current Capabilities
 
 Quarry v1 is a functional, single-node document retrieval engine. It provides the core end-to-end pipeline required to securely upload a document, extract its text, compute dense vector representations, and query the resulting index.
 
-**Supported Capabilities:**
-- **Authentication**: Stateless, JWT-based bearer token authentication.
-- **Document Ingestion**: Synchronous PDF parsing and text extraction.
-- **Text Processing**: Deterministic sliding-window chunking logic.
-- **Vector Generation**: In-memory dense embedding computation using local transformer models.
-- **Semantic Search**: Similarity matching against processed chunks for contextual retrieval.
+* **🔒 Authentication**: Stateless, JWT-based bearer token authentication.
+* **📄 Document Ingestion**: Synchronous PDF parsing and text extraction.
+* **⚙️ Text Processing**: Deterministic sliding-window chunking logic.
+* **🧠 Vector Generation**: In-memory dense embedding computation using local transformer models.
+* **🔍 Semantic Search**: Similarity matching against processed chunks for contextual retrieval.
 
 ---
 
-## 4. Future Vision
+## 🔮 Future Vision
 
 Quarry will evolve from a synchronous, single-node API into a distributed, highly observable infrastructure component capable of supporting asynchronous ingestion pipelines, hybrid search workloads, and autonomous agents at enterprise scale.
 
@@ -42,7 +53,7 @@ Quarry will evolve from a synchronous, single-node API into a distributed, highl
 
 ---
 
-## 5. System Architecture Flow
+## 🏛️ System Architecture
 
 ```mermaid
 graph TD
@@ -66,68 +77,47 @@ graph TD
 
 ---
 
-## 6. Current Technology Stack
+## ⚙️ Technology Stack
 
-**API & Routing**
-- **FastAPI**: High-performance ASGI web framework.
-- **Pydantic**: Strict data validation and schema serialization.
-
-**Data & Persistence**
-- **PostgreSQL**: Primary relational datastore.
-- **SQLAlchemy**: Object-Relational Mapper.
-- **psycopg2**: PostgreSQL database adapter.
-
-**Security**
-- **python-jose**: JWT signing and cryptographic verification.
-- **passlib**: Password hashing (bcrypt).
-
-**Document Intelligence**
-- **PyMuPDF**: Robust PDF parsing and text extraction.
-- **sentence-transformers**: HuggingFace model integration for generating dense vector embeddings.
+| Domain | Technologies | Purpose |
+| :--- | :--- | :--- |
+| **API & Routing** | FastAPI, Pydantic | High-performance async routing and strict data validation |
+| **Data & Persistence** | PostgreSQL, SQLAlchemy | Relational datastore and Object-Relational Mapping |
+| **Security** | python-jose, passlib | JWT cryptographic verification and password hashing |
+| **Document Intelligence**| PyMuPDF, sentence-transformers | PDF parsing, text extraction, and dense vector generation |
 
 ---
 
-## 7. Architecture Decisions
+## 🗺️ Quarry Evolution
 
-- **Why FastAPI?** 
-  Chosen for its native asynchronous support, auto-generated OpenAPI schemas, and seamless Pydantic integration, which drastically reduces input validation boilerplate and prevents malformed data from reaching the service layer.
-- **Why PostgreSQL?** 
-  We prioritize strict relational integrity for multi-tenant isolation. Vector support will be layered on top of this stable foundation via `pgvector` rather than adopting a disconnected, specialized vector database, reducing operational complexity.
-- **Why JWT?** 
-  Stateless, cryptographically verifiable tokens allow the API layer to scale horizontally without requiring a distributed session store for v1.
-- **Why Embeddings (Sentence-Transformers)?** 
-  Dense vector retrieval significantly outperforms traditional BM25/keyword search for semantic intent matching, which is non-negotiable for RAG pipelines. Local `sentence-transformers` execution enables deterministic testing without immediate dependency on external API providers.
+### Quarry v1 — Foundation
+✅ JWT Authentication  
+✅ PostgreSQL  
+✅ PDF Upload  
+✅ Embedding Generation  
+✅ Semantic Retrieval  
 
----
+### Quarry v2 — Performance
+⬜ Redis  
+⬜ pgvector  
+⬜ Docker  
+⬜ Testing  
 
-## 8. Roadmap by Quarry Versions
+### Quarry v3 — Intelligence
+⬜ LLM Integration  
+⬜ Streaming  
+⬜ Cost Tracking  
 
-### v1.x: Core Foundation (Current)
-- JWT Authentication & RBAC groundwork.
-- Synchronous Document Upload & PDF Parsing.
-- Local Embedding Generation & Basic Retrieval.
-
-### v2.x: Scale & Performance
-- Asynchronous task queues for document processing (Redis).
-- Native vector search indexing using `pgvector`.
-- Streaming responses for chat retrieval endpoints.
-
-### v3.x: Advanced Retrieval
-- Hybrid Search (Dense Vectors + Sparse/BM25).
-- Neural Reranking integration (e.g., Cohere or Cross-Encoders).
-- Provider integrations (OpenAI, Anthropic, Gemini).
-
-### v4.x: Enterprise Operations
-- Deep observability (OpenTelemetry distributed tracing).
-- Agentic workflow support (tool use and routing integration).
-- High availability deployment manifests (Docker, Kubernetes).
+### Quarry v4 — Production RAG
+⬜ Hybrid Search  
+⬜ Reranking  
+⬜ Evaluation  
 
 ---
 
-## 9. Local Development Setup
+## 🛠️ Local Development Setup
 
 **1. Environment Setup**
-Clone the repository and initialize your virtual environment:
 ```bash
 git clone https://github.com/x2ankit/quarry.git
 cd quarry
@@ -156,7 +146,4 @@ Launch the ASGI server:
 ```bash
 uvicorn app.main:app --reload
 ```
-API Documentation and OpenAPI spec available at `http://localhost:8000/docs`.
-
----
-*License: No license specified*
+*API Documentation and OpenAPI spec available at `http://localhost:8000/docs`.*
