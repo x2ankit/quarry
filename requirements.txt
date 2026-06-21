@@ -9,3 +9,5 @@ passlib[bcrypt]
 python-multipart
 PyMuPDF
 sentence-transformers
+redis
+email-validator
