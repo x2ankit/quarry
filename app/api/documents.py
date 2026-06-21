@@ -1,28 +1,32 @@
-from fastapi import APIRouter, Depends,HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from app.schemas.document import DocumentResponse,DocumentCreate
-from app.db.dependencies import get_current_user,get_db
+import json
+
+from app.schemas.document import DocumentResponse, DocumentCreate
+from app.db.dependencies import get_current_user, get_db
 from app.models.document import Document
 from app.models.user import User
-
+from app.core.redis import redis_client
 
 router = APIRouter()
 
-@router.get("/documents",response_model= list[DocumentResponse])
+
+@router.get("/documents", response_model=list[DocumentResponse])
 def get_documents(
-    current_user : User = Depends(get_current_user),
-    db : Session = Depends(get_db)
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
-        documents = db.execute(
+    documents = db.execute(
         select(Document).where(
             Document.owner_id == current_user.id
         )
     ).scalars().all()
-        return documents
+
+    return documents
 
 
-@router.post("/documents",response_model= DocumentResponse)
+@router.post("/documents", response_model=DocumentResponse)
 def create_document(
     document: DocumentCreate,
     current_user: User = Depends(get_current_user),
@@ -39,6 +43,7 @@ def create_document(
 
     return new_document
 
+
 @router.get(
     "/documents/{document_id}",
     response_model=DocumentResponse
@@ -48,6 +53,15 @@ def get_document(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    cache_key = f"document:{document_id}"
+
+    cached_document = redis_client.get(cache_key)
+
+    if cached_document:
+        return DocumentResponse.model_validate(
+            json.loads(cached_document)
+        )
+
     document = db.execute(
         select(Document).where(
             Document.id == document_id
@@ -66,9 +80,20 @@ def get_document(
             detail="Access denied"
         )
 
+    document_data = {
+        "id": document.id,
+        "filename": document.filename,
+        "owner_id": document.owner_id,
+        "uploaded_at": document.uploaded_at.isoformat()
+    }
+
+    redis_client.set(
+        cache_key,
+        json.dumps(document_data),
+        ex=300
+    )
+
     return document
-
-
 
 
 @router.delete("/documents/{document_id}")
@@ -97,6 +122,10 @@ def delete_document(
 
     db.delete(document)
     db.commit()
+
+    redis_client.delete(
+        f"document:{document_id}"
+    )
 
     return {
         "message": "Document deleted"
